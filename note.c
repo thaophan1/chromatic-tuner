@@ -43,12 +43,13 @@ void findNote(float f) {
 	if ((f-c) > (r-f))
 		n++;
 
-	float expFreq = a4 * pow(2, ((n - 9)/12.0) + oct - 4);
+	float expFreq = a4 * pow(2, ((n - 9)/12.0) + (oct - 4));
+	xil_printf("ExpFreq: %d\n", (int)(expFreq));
 
 	error = (int)(1200 * log10(f/expFreq)/log10(2)) % 100;
-	if (error < 0)
-		error *= -1;
-	if (error > 99)
+	if (error < -99)
+		error = -99;
+	else if (error > 99)
 		error = 99;
 
 	strcpy(note, notes[n]);

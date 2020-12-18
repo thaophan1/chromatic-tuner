@@ -232,15 +232,16 @@ void adjust_fft_func_values(int octave) {
 		case 0:
 		case 1:
 		case 2:
-		case 4: {
-			m = 4;
-			incr = 16;
+		case 3: {
+			m = 5;
+			incr = 32;
 			sample_size = 1;
 			break;
 		}
-		case 5:{
-			m = 3;
-			incr = 8;
+		case 4:
+		case 5: {
+			m = 4;
+			incr = 16;
 			sample_size = 2;
 			break;
 		}
@@ -248,19 +249,19 @@ void adjust_fft_func_values(int octave) {
 		case 7: {
 			m = 2;
 			incr = 4;
-			sample_size = 4;
+			sample_size = 8;
 			break;
 		}
 		case 8: {
 			m = 1;
 			incr = 2;
-			sample_size = 8;
+			sample_size = 16;
 			break;
 		}
 		case 9: {
 			m = 0;
 			incr = 1;
-			sample_size = 16;
+			sample_size = 32;
 			break;
 		}
 	}
@@ -326,10 +327,14 @@ void drawError(int error) {
 	setColor(255, 0, 0);
 	setDrawingBgColor();
 	lcdPrint("Error: ", 50, 160);
-	char errStr[9];
+	char errStr[10];
 	itoa(error, errStr, 10);
 	strcat(errStr, " cents");
 	if (errStr[6] == 's')
+		strcat(errStr, "   ");
+	else if (errStr[7] == 's')
+		strcat(errStr, "  ");
+	else if (errStr[8] == 's')
 		strcat(errStr, " ");
 	lcdPrint(errStr, 50, 190);
 	setBackGroundColor();
@@ -337,9 +342,15 @@ void drawError(int error) {
 
 void drawErrorBar(int error) {
 	setColor(242, 245, 66);
-	fillRect(50, 220, 50 + (error * 1.5), 250);
+	fillRect(125, 220, 125 + (error * 0.75), 250);
 	setBackGroundColor();
-	fillRect(50 + (error * 1.5), 220, 200, 250);
+	if (error < 0) {
+		fillRect(50 - (error * 0.75), 220, 50, 250);
+		fillRect(125, 220, 200, 250);
+	} else {
+		fillRect(200 - (error * 0.75), 250, 200, 220);
+		fillRect(50, 220, 125, 250);
+	}
 }
 
 void clearHomeScreen() {

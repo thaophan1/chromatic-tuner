@@ -40,14 +40,14 @@
 extern bool inHomeScreen;
 float frequency;
 float sample_f;
-int m = 4;
-int incr = 16;
+int m = 5;
+int incr = 32;
 int sample_size = 1;
 int octave = 2;
 int error = 0;
 int a4 = 440;
 
-int octaveOffsets[10] = {4, 4, 4, 4, 4, 3, 2, 2, 1, 0};
+int octaveOffsets[10] = {5, 5, 5, 5, 4, 4, 2, 2, 1, 0};
 
 static float q[SAMPLES];
 static float w[SAMPLES];
@@ -182,7 +182,7 @@ void QF_onStartup(void) {                 /* entered with interrupts locked */
 
 	xil_printf("Finished Initialization\r\n");
 
-	read_fsl_values(q, 2048); //start pipeline
+	read_fsl_values(q, 4096); //start pipeline
 	stream_grabber_start();
 	makeTrigLUT(SAMPLES);
 
@@ -234,12 +234,12 @@ void QF_onIdle(void) {        /* entered with interrupts locked */
 
 			frequency = fft(q, w, SAMPLES, M, sample_f);
 			if (octave <= 5)
-				frequency += 8;
+				frequency += 14;
 			findNote(frequency);
 
 			//pipeline
-			stream_grabber_wait_enough_samples(2048/sample_size);
-			fill_samples(q, 2048, m, incr, sample_size);
+			stream_grabber_wait_enough_samples(4096/sample_size);
+			fill_samples(q, 4096, m, incr, sample_size);
 			stream_grabber_start();
 
 			QActive_postISR((QActive *)&AO_Lab2A, IDLE_SIG);
